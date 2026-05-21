@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Connect</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="logo">
+            <img src="/images/pilllogo.jpeg" alt="Logo" width="100">
+        </div>
+
+        <h1>Prescription Connect</h1>
+
+        <p class="subtitle">
+            Smart medication management with reminders,
+            schedules and health tracking.
+        </p>
+
+        <div class="input-group">
+            <label class="input-label">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email">
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+
+        <button onclick="login()">
+            Continue
+        </button>
+
+        <div class="bottom-text">
+            Don't have an account?
+            <a href="register.html">Create Account</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/auth.js"></script>
+<div id="toastContainer"></div>
+<script src="js/toast.js"></script>
+
+</body>
+</html>

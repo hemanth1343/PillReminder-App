@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Reminders
+    </title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="nav-brand">
+
+        <h1>
+            🔔 Reminder Center
+        </h1>
+
+    </div>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="medications.html">
+            Medications
+        </a>
+
+        <a href="profile.html">
+            Profile
+        </a>
+
+        <button class="logout-btn"
+                onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div style="padding:40px;">
+
+    <div class="card">
+
+        <h1 class="section-title">
+
+            Today's Reminders
+
+        </h1>
+
+        <div id="reminderList">
+
+            <p>
+                Loading reminders...
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/reminders.js"></script>
+
+</body>
+
+</html>

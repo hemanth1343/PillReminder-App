@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Dashboard | Prescription Connect
+    </title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="nav-brand">
+
+        <div class="logo">
+            💊
+        </div>
+
+        <div>
+
+            <h1 class="brand-title">
+                Prescription Connect
+            </h1>
+
+            <p class="brand-subtitle">
+                Smart Healthcare Dashboard
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="medications.html">
+            Medications
+        </a>
+
+        <a href="reminders.html">
+            Reminders
+        </a>
+
+        <a href="profile.html">
+            Profile
+        </a>
+
+        <div class="theme-switcher">
+
+            <button class="theme-btn active"
+                    onclick="setTheme('dark')"
+                    id="darkBtn">
+
+                🌙
+
+            </button>
+
+            <button class="theme-btn"
+                    onclick="setTheme('light')"
+                    id="lightBtn">
+
+                ☀️
+
+            </button>
+
+            <button class="theme-btn"
+                    onclick="setTheme('dim')"
+                    id="dimBtn">
+
+                🌆
+
+            </button>
+
+        </div>
+
+        <button class="logout-btn"
+                onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div style="padding:50px;">
+
+    <div style="margin-bottom:40px;">
+
+        <h1 class="card-title">
+            Welcome Back 👋
+        </h1>
+
+        <p class="subtitle"
+           style="max-width:700px;">
+
+            Manage medications, reminders and health tracking
+            with your intelligent healthcare assistant.
+
+        </p>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <h3>
+                Active Medications
+            </h3>
+
+            <h1 id="activeMedications">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>
+                Today's Reminders
+            </h3>
+
+            <h1 id="todayReminders">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>
+                Adherence
+            </h3>
+
+            <h1 id="adherence">
+                0%
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>
+                Missed Doses
+            </h3>
+
+            <h1 id="missedDoses">
+                0
+            </h1>
+
+        </div>
+
+    </div>
+
+    <!-- DASHBOARD CARDS -->
+    <!-- ANALYTICS -->
+
+    <div class="dashboard-container">
+
+        <!-- DOUGHNUT CHART -->
+
+        <div class="card">
+
+            <h1 class="section-title">
+                Medication Adherence
+            </h1>
+
+            <canvas id="adherenceChart"></canvas>
+
+        </div>
+
+        <!-- BAR CHART -->
+
+        <div class="card">
+
+            <h1 class="section-title">
+                Weekly Activity
+            </h1>
+
+            <canvas id="activityChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-container">
+
+        <div class="card">
+
+            <h1 class="section-title">
+                Upcoming Medications
+            </h1>
+
+            <div class="medication-item">
+
+                <h3>
+                    Paracetamol
+                </h3>
+
+                <p>
+                    💊 Dosage: 500mg<br>
+                    ⏰ Time: 08:00 PM<br>
+                    📅 Daily
+                </p>
+
+                <span class="status-badge">
+                    Upcoming
+                </span>
+
+            </div>
+
+            <div class="medication-item"
+                 style="margin-top:18px;">
+
+                <h3>
+                    Vitamin D
+                </h3>
+
+                <p>
+                    💊 Dosage: 1 Tablet<br>
+                    ⏰ Time: 09:30 PM<br>
+                    📅 Daily
+                </p>
+
+                <span class="status-badge">
+                    Active
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h1 class="section-title">
+                Quick Actions
+            </h1>
+
+            <button class="btn"
+                    onclick="window.location.href='medications.html'">
+
+                Add Medication
+
+            </button>
+
+            <button class="btn"
+                    style="margin-top:20px;"
+                    onclick="window.location.href='reminders.html'">
+
+                View Reminders
+
+            </button>
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function logout(){
+
+        localStorage.clear();
+
+        window.location.href =
+            "index.html";
+    }
+
+</script>
+<script>
+
+    function setTheme(theme){
+
+        document.body.classList.remove(
+            "dark-theme",
+            "light-theme",
+            "dim-theme"
+        );
+
+        document.body.classList.add(
+            theme + "-theme"
+        );
+
+        localStorage.setItem(
+            "theme",
+            theme
+        );
+
+        document.querySelectorAll(
+            ".theme-btn"
+        ).forEach(btn => {
+
+            btn.classList.remove(
+                "active"
+            );
+        });
+
+        document.getElementById(
+            theme + "Btn"
+        ).classList.add(
+            "active"
+        );
+    }
+
+    function loadTheme(){
+
+        const savedTheme =
+            localStorage.getItem("theme")
+            || "dark";
+
+        setTheme(savedTheme);
+    }
+
+    loadTheme();
+
+</script>
+<div id="toastContainer"></div>
+<script src="js/toast.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    /* ========================= */
+    /* ADHERENCE CHART */
+    /* ========================= */
+
+    const adherenceCtx =
+        document
+            .getElementById(
+                'adherenceChart'
+            );
+
+    new Chart(adherenceCtx, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: [
+                'Taken',
+                'Missed'
+            ],
+
+            datasets: [{
+
+                data: [92, 8],
+
+                backgroundColor: [
+                    '#10b981',
+                    '#ef4444'
+                ],
+
+                borderWidth: 0
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            }
+        }
+    });
+
+    /* ========================= */
+    /* WEEKLY ACTIVITY */
+    /* ========================= */
+
+    const activityCtx =
+        document
+            .getElementById(
+                'activityChart'
+            );
+
+    new Chart(activityCtx, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: [
+                'Mon',
+                'Tue',
+                'Wed',
+                'Thu',
+                'Fri',
+                'Sat',
+                'Sun'
+            ],
+
+            datasets: [{
+
+                label: 'Medications Taken',
+
+                data: [
+                    5,
+                    7,
+                    6,
+                    8,
+                    9,
+                    6,
+                    7
+                ],
+
+                backgroundColor:
+                    '#6366f1',
+
+                borderRadius: 12
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+
+                    labels: {
+                        color: 'white'
+                    }
+                }
+            },
+
+            scales: {
+
+                y: {
+
+                    ticks: {
+                        color: 'white'
+                    },
+
+                    grid: {
+                        color:
+                            'rgba(255,255,255,0.08)'
+                    }
+                },
+
+                x: {
+
+                    ticks: {
+                        color: 'white'
+                    },
+
+                    grid: {
+                        color:
+                            'rgba(255,255,255,0.08)'
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+<script>
+
+    async function loadDashboardStats(){
+
+        const token =
+            localStorage.getItem("token");
+
+        try{
+
+            const response =
+                await fetch(
+                    "http://localhost:8080/api/dashboard/stats",
+                    {
+                        headers:{
+                            Authorization:
+                                "Bearer " + token
+                        }
+                    }
+                );
+
+            if(!response.ok){
+
+                showToast(
+                    "Failed to load dashboard",
+                    "error"
+                );
+
+                return;
+            }
+
+            const stats =
+                await response.json();
+
+            document.getElementById(
+                "activeMedications"
+            ).innerText =
+                stats.activeMedications;
+
+            document.getElementById(
+                "todayReminders"
+            ).innerText =
+                stats.todayReminders;
+
+            document.getElementById(
+                "adherence"
+            ).innerText =
+                stats.adherence + "%";
+
+            document.getElementById(
+                "missedDoses"
+            ).innerText =
+                stats.missedDoses;
+
+        }
+
+        catch(error){
+
+            console.error(error);
+
+            showToast(
+                "Server Error",
+                "error"
+            );
+        }
+    }
+
+    loadDashboardStats();
+
+</script>
+
+</body>
+
+</html>

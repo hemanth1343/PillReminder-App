@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Admin Dashboard
+    </title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="nav-brand">
+
+        <h1>
+            🛡 Admin Panel
+        </h1>
+
+    </div>
+
+    <div class="nav-links">
+
+        <button class="logout-btn"
+                onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</div>
+
+<div style="padding:40px;">
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <h3>Total Users</h3>
+
+            <h1 id="totalUsers">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Total Medications</h3>
+
+            <h1 id="totalMedications">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Total Reminders</h3>
+
+            <h1 id="totalLogs">
+                0
+            </h1>
+
+        </div>
+
+    </div>
+
+    <div class="card"
+         style="margin-top:30px;">
+
+        <h1 class="section-title">
+
+            Registered Users
+
+        </h1>
+
+        <table class="table">
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody id="userTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>
