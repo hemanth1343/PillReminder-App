@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Admin Dashboard
+    </title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="nav-brand">
+
+        <h1>
+            🛡 Admin Panel
+        </h1>
+
+    </div>
+
+    <div class="nav-links">
+
+        <button class="logout-btn"
+                onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN CONTENT -->
+
+<div class="main-content">
+
+    <!-- SUMMARY SECTION -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <h3>Total Users</h3>
+
+            <h1 id="totalUsers">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Total Medications</h3>
+
+            <h1 id="totalMedications">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>Total Reminders</h3>
+
+            <h1 id="totalLogs">
+                0
+            </h1>
+
+        </div>
+
+    </div>
+
+	<!-- CREATE ADMIN -->
+
+	<div class="card">
+
+	    <h2 class="section-title">
+	        Create Admin
+	    </h2>
+
+	    <div class="input-grid">
+
+	        <div class="input-group">
+
+	            <input type="text"
+	                   id="adminName"
+	                   placeholder="Full Name">
+
+	        </div>
+
+	        <div class="input-group">
+
+	            <input type="email"
+	                   id="adminEmail"
+	                   placeholder="Email">
+
+	        </div>
+
+	        <div class="input-group">
+
+	            <input type="password"
+	                   id="adminPassword"
+	                   placeholder="Password">
+
+	        </div>
+
+	        <div class="input-group">
+
+	            <input type="text"
+	                   id="adminPhone"
+	                   placeholder="Phone">
+
+	        </div>
+
+	    </div>
+
+	    <button class="btn"
+	            onclick="createAdmin()">
+
+	        Create Admin
+
+	    </button>
+
+	    <p id="adminMessage"></p>
+
+	</div>
+
+	<!-- USERS TABLE -->
+
+	<div class="card">
+
+	    <h2 class="section-title">
+	        Registered Users
+	    </h2>
+
+	    <div class="table-container">
+
+	        <table>
+
+	            <thead>
+
+	            <tr>
+
+	                <th>ID</th>
+	                <th>Name</th>
+	                <th>Email</th>
+	                <th>Role</th>
+	                <th>Status</th>
+	                <th>Actions</th>
+
+	            </tr>
+
+	            </thead>
+
+	            <tbody id="userTableBody">
+
+	                <!-- Example Row -->
+
+	                
+	                <tr onclick="viewUserDetails(1)">
+
+	                    <td>1</td>
+
+	                    <td>John</td>
+
+	                    <td>john@gmail.com</td>
+
+	                    <td>ROLE_USER</td>
+
+	                    <td>
+	                        <span class="status-active">
+	                            Active
+	                        </span>
+	                    </td>
+
+	                    <td>
+
+	                        <button class="block-btn"
+	                                onclick="blockUser(event,1)">
+
+	                            Block
+
+	                        </button>
+
+	                        <button class="unblock-btn"
+	                                onclick="unblockUser(event,1)">
+
+	                            Unblock
+
+	                        </button>
+
+	                        <button class="delete-btn"
+	                                onclick="deleteUser(event,1)">
+
+	                            Delete
+
+	                        </button>
+
+	                    </td>
+
+	                </tr>
+	                
+
+	            </tbody>
+
+	        </table>
+
+	    </div>
+
+	</div>
+
+	<!-- USER DETAILS MODAL -->
+
+	<div id="userModal"
+	     class="modal">
+
+	    <div class="modal-content">
+
+	        <span class="close-btn"
+	              onclick="closeModal()">
+
+	            &times;
+
+	        </span>
+
+	        <h2>
+	            User Details
+	        </h2>
+
+	        <div id="userDetails">
+
+	            <!-- medications/reminders will load here -->
+
+	        </div>
+
+	    </div>
+
+	</div>
+
+</div>
+
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Dashboard | Prescription Connect
+    </title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        canvas{
+
+            width:100% !important;
+
+            height:350px !important;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="nav-brand">
+
+        <div class="logo">
+            💊
+        </div>
+
+        <div>
+
+            <h1 class="brand-title">
+                Prescription Connect
+            </h1>
+
+            <p class="brand-subtitle">
+                Smart Healthcare Dashboard
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="nav-links">
+
+        <a href="medications.html">
+            Medications
+        </a>
+
+        <a href="reminders.html">
+            Reminders
+        </a>
+
+        <a href="profile.html">
+            Profile
+        </a>
+
+        <button class="emergency-btn"
+                onclick="handleEmergency()">
+
+            Emergency
+
+        </button>
+
+        <div class="theme-switcher">
+
+            <button class="theme-btn active"
+                    onclick="setTheme('dark')"
+                    id="darkBtn">
+
+                🌙
+
+            </button>
+
+            <button class="theme-btn"
+                    onclick="setTheme('light')"
+                    id="lightBtn">
+
+                ☀️
+
+            </button>
+
+            <button class="theme-btn"
+                    onclick="setTheme('dim')"
+                    id="dimBtn">
+
+                🌆
+
+            </button>
+
+        </div>
+
+        <button class="logout-btn"
+                onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div style="padding:50px;">
+
+    <!-- HEADER -->
+
+    <div style="margin-bottom:40px;">
+
+        <h1 class="card-title">
+            Welcome Back 👋
+        </h1>
+
+        <p class="subtitle"
+           style="max-width:700px;">
+
+            Manage medications, reminders and health tracking
+            with your intelligent healthcare assistant.
+
+        </p>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <h3>
+                Active Medications
+            </h3>
+
+            <h1 id="activeMedications">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>
+                Today's Reminders
+            </h3>
+
+            <h1 id="todayReminders">
+                0
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>
+                Adherence
+            </h3>
+
+            <h1 id="adherence">
+                0%
+            </h1>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h3>
+                Missed Doses
+            </h3>
+
+            <h1 id="missedDoses">
+                0
+            </h1>
+
+        </div>
+
+    </div>
+
+    <!-- ANALYTICS -->
+
+    <div class="dashboard-container">
+
+        <!-- ADHERENCE -->
+
+        <div class="card">
+
+            <h1 class="section-title">
+                Medication Adherence
+            </h1>
+
+            <div
+                style="
+                    position:relative;
+                    width:100%;
+                    height:350px;
+                "
+            >
+
+                <canvas id="adherenceChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <!-- WEEKLY -->
+
+        <div class="card">
+
+            <h1 class="section-title">
+                Weekly Activity
+            </h1>
+
+            <div
+                style="
+                    position:relative;
+                    width:100%;
+                    height:350px;
+                "
+            >
+
+                <canvas id="activityChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TOAST -->
+
+<div id="toastContainer"></div>
+
+<!-- SCRIPTS -->
+
+<script src="js/toast.js"></script>
+
+<script src="js/medication.js"></script>
+
+<!-- CHART JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- MAIN DASHBOARD JS -->
+
+<script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

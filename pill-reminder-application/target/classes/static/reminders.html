@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Reminders
+    </title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="nav-brand">
+
+        <h1>
+            🔔 Reminder Center
+        </h1>
+
+    </div>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="medications.html">
+            Medications
+        </a>
+
+        <a href="profile.html">
+            Profile
+        </a>
+		
+		<button class="emergency-btn"
+						        onclick="handleEmergency()">
+
+						    Emergency
+
+						</button>
+
+        <button class="logout-btn"
+                onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div style="padding:40px;">
+
+	<div class="main-content">
+
+	    <div class="page-header">
+
+	        <h1 class="page-title">
+
+	            🔔 Today's Reminders
+
+	        </h1>
+
+	        <p class="page-subtitle">
+
+	            Track and manage your daily medications
+
+	        </p>
+
+	    </div>
+
+	    <div id="reminderList"
+	         class="reminder-grid">
+
+	        <div class="loading-card">
+
+	            <h3>
+	                Loading reminders...
+	            </h3>
+
+	        </div>
+
+	    </div>
+
+	</div>
+
+</div>
+<script src="js/toast.js"></script>
+<script src="js/medication.js"></script>
+<script src="js/reminder.js"></script>
+
+</body>
+
+</html>
