@@ -10,4 +10,15 @@ public interface UserService {
 	void changePassword(String email, ChangePasswordRequest request);
 
 	void deleteAccount(String email);
+	
+	void changePasswordAfterOtp(
+	        String email,
+	        String newPassword
+	);
+	
+	void resetPassword(
+	        String email,
+	        String newPassword
+	);
+	
 }

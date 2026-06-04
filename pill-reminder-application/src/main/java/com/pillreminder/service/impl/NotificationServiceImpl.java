@@ -113,7 +113,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 							+
 
-							"<p>⏰ It's time to take your medication.</p>"
+							"<p>💊 Medication has been Added.</p>"
 
 							+
 
@@ -207,14 +207,14 @@ public class NotificationServiceImpl implements NotificationService {
 			mailSender.send(message);
 
 			log.info(
-					"✅ HTML reminder mail sent to {}",
+					" HTML reminder mail sent to {}",
 					user.getEmail()
 			);
 
 		} catch (Exception e) {
 
 			log.error(
-					"❌ Failed to send HTML reminder email: {}",
+					"Failed to send HTML reminder email: {}",
 					e.getMessage()
 			);
 		}

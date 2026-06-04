@@ -1,17 +1,26 @@
 package com.pillreminder.service.impl;
 
-import com.pillreminder.service.MailService;
+import java.time.LocalDateTime;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.pillreminder.entity.EmailOtp;
+import com.pillreminder.service.MailService;
 
 @Service
 public class MailServiceImpl implements MailService {
 
     @Autowired
     private JavaMailSender mailSender;
+    
+    
 
     // ==============================
     // Medication Reminder Mail
@@ -40,7 +49,7 @@ public class MailServiceImpl implements MailService {
 
             // Subject
             message.setSubject(
-                    "💊 Prescription Connect - Medication Reminder"
+                    "💊 Prescription Connect - Medication"
             );
 
             // Mail Body
@@ -70,13 +79,13 @@ public class MailServiceImpl implements MailService {
             mailSender.send(message);
 
             System.out.println(
-                    "✅ Reminder Mail Sent Successfully"
+                    " Added Madication Mail Sent Successfully"
             );
 
         } catch (Exception e) {
 
             System.out.println(
-                    "❌ Failed To Send Reminder Mail"
+                    " Failed To Send Reminder Mail"
             );
 
             e.printStackTrace();
@@ -112,16 +121,68 @@ public class MailServiceImpl implements MailService {
             mailSender.send(message);
 
             System.out.println(
-                    "✅ Generic Mail Sent Successfully"
+                    " Reminder Mail Sent Successfully"
             );
 
         } catch (Exception e) {
 
             System.out.println(
-                    "❌ Failed To Send Generic Mail"
+                    " Failed To Send Generic Mail"
             );
 
             e.printStackTrace();
         }
     }
+    
+    @Override
+    public void sendOtpMail(
+            String to,
+            String otp
+    ) {
+
+        try {
+
+            SimpleMailMessage message =
+                    new SimpleMailMessage();
+
+            message.setFrom(
+                    "mkakarla610@gmail.com"
+            );
+
+            message.setTo(to);
+
+            message.setSubject(
+                    "Prescription Connect OTP Verification"
+            );
+
+            message.setText(
+
+                    "Hello,\n\n"
+
+                    + "Your OTP is: "
+
+                    + otp
+
+                    + "\n\n"
+
+                    + "This OTP is valid for 5 minutes.\n\n"
+
+                    + "Prescription Connect"
+            );
+
+            mailSender.send(message);
+
+            System.out.println(
+                    "✅ OTP Mail Sent Successfully"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+    
+   
+    
+    
 }

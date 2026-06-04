@@ -36,9 +36,27 @@
 
     <div class="nav-brand">
 
-        <div class="logo">
-            💊
-        </div>
+		<div
+		    style="
+		        display:flex;
+		        align-items:center;
+		        gap:15px;
+		    ">
+
+		    <img
+		        id="profilePreview"
+		        src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+		        alt="Profile"
+		        style="
+		            width:90px;
+		            height:90px;
+		            border-radius:50%;
+		            object-fit:cover;
+		            border:4px solid #7c4dff;
+		            box-shadow:0 0 20px rgba(124,77,255,0.4);
+		        ">
+
+		</div>
 
         <div>
 
@@ -75,33 +93,6 @@
 
         </button>
 
-        <div class="theme-switcher">
-
-            <button class="theme-btn active"
-                    onclick="setTheme('dark')"
-                    id="darkBtn">
-
-                🌙
-
-            </button>
-
-            <button class="theme-btn"
-                    onclick="setTheme('light')"
-                    id="lightBtn">
-
-                ☀️
-
-            </button>
-
-            <button class="theme-btn"
-                    onclick="setTheme('dim')"
-                    id="dimBtn">
-
-                🌆
-
-            </button>
-
-        </div>
 
         <button class="logout-btn"
                 onclick="logout()">
@@ -259,7 +250,8 @@
 <!-- MAIN DASHBOARD JS -->
 
 <script src="js/dashboard.js"></script>
-
+<script src="js/theme.js"></script>
+<script src="js/profile-image.js"></script>
 </body>
 
 </html>

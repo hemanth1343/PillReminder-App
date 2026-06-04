@@ -91,5 +91,29 @@ public interface ReminderLogRepository extends JpaRepository<ReminderLog, Long> 
     	        @Param("date")
     	        LocalDate date
     	);
+    
+    @Query("""
+
+    		SELECT r
+
+    		FROM ReminderLog r
+
+    		WHERE r.status = 'PENDING'
+
+    		AND r.emailSent = false
+
+    		AND r.scheduledTime
+    		BETWEEN :now AND :afterFiveMinutes
+
+    		""")
+
+    		List<ReminderLog> findUpcomingReminders(
+
+    		        @Param("now")
+    		        LocalDateTime now,
+
+    		        @Param("afterFiveMinutes")
+    		        LocalDateTime afterFiveMinutes
+    		);
 }
 

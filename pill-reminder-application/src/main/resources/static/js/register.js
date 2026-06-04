@@ -1,22 +1,182 @@
-async function registerUser() {
+const API_URL =
+    "http://localhost:8080/api";
 
-    const fullName =
-        document.getElementById("fullName").value;
+let otpVerified = false;
+
+
+async function sendOtp(){
 
     const email =
-        document.getElementById("email").value;
+        document.getElementById(
+            "email"
+        ).value;
 
-    const password =
-        document.getElementById("password").value;
-
-    /*
-        VALIDATION
-    */
-
-    if (!fullName || !email || !password) {
+    if(!email){
 
         showToast(
+            "Please enter email",
+            "warning"
+        );
+
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch(
+
+                `${API_URL}/auth/send-otp?email=${encodeURIComponent(email)}`,
+
+                {
+                    method:"POST"
+                }
+            );
+
+        const message =
+            await response.text();
+
+        if(response.ok){
+
+            showToast(
+                "OTP sent successfully",
+                "success"
+            );
+        }
+
+        else{
+
+            showToast(
+                message,
+                "error"
+            );
+        }
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Failed to send OTP",
+            "error"
+        );
+    }
+}
+
+
+async function verifyOtp(){
+
+    const email =
+        document.getElementById(
+            "email"
+        ).value;
+
+    const otp =
+        document.getElementById(
+            "otp"
+        ).value;
+
+    if(!otp){
+
+        showToast(
+            "Please enter OTP",
+            "warning"
+        );
+
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch(
+
+                `${API_URL}/auth/verify-otp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`,
+
+                {
+                    method:"POST"
+                }
+            );
+
+        const message =
+            await response.text();
+
+        if(response.ok){
+
+            otpVerified = true;
+
+            showToast(
+                "OTP Verified Successfully",
+                "success"
+            );
+        }
+
+        else{
+
+            otpVerified = false;
+
+            showToast(
+                message,
+                "error"
+            );
+        }
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showToast(
+            "OTP Verification Failed",
+            "error"
+        );
+    }
+}
+
+async function registerUser() {
+
+    if(!otpVerified){
+
+        showToast(
+            "Please verify OTP first",
+            "warning"
+        );
+
+        return;
+    }
+
+    const fullName =
+        document.getElementById(
+            "fullName"
+        ).value;
+
+    const email =
+        document.getElementById(
+            "email"
+        ).value;
+
+    const password =
+        document.getElementById(
+            "password"
+        ).value;
+
+    // VALIDATION
+
+    if (
+
+        !fullName ||
+
+        !email ||
+
+        !password
+
+    ){
+
+        showToast(
+
             "Please fill all fields",
+
             "warning"
         );
 
@@ -25,77 +185,77 @@ async function registerUser() {
 
     try {
 
-        /*
-            REGISTER API CALL
-        */
+        const response =
+            await fetch(
 
-        const response = await fetch(
-            "http://localhost:8080/api/auth/register",
-            {
-                method: "POST",
+                `${API_URL}/auth/register`,
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+                {
+                    method: "POST",
 
-                body: JSON.stringify({
-                    fullName,
-                    email,
-                    password
-                })
-            }
-        );
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        fullName,
+
+                        email,
+
+                        password
+                    })
+                }
+            );
 
         console.log(
+
             "REGISTER STATUS => ",
+
             response.status
         );
 
-        /*
-            SUCCESS
-        */
-
-        if (response.ok) {
+        if(response.ok){
 
             showToast(
+
                 "✓ Registration Successful",
+
                 "success"
             );
 
-            window.location.href =
-                "index.html";
+            setTimeout(() => {
+
+                window.location.href =
+                    "index.html";
+
+            }, 1500);
 
             return;
         }
 
-        /*
-            BACKEND ERROR RESPONSE
-        */
-
         let errorMessage =
             "Registration Failed";
 
-        try {
+        try{
 
             const errorData =
                 await response.json();
 
-            console.log(
-                "REGISTER ERROR => ",
-                errorData
-            );
-
-            if (errorData.message) {
+            if(errorData.message){
 
                 errorMessage =
                     errorData.message;
             }
 
-        } catch(e) {
+        }
+
+        catch(e){
 
             console.log(
-                "Could not parse error response"
+                "Error response parse failed"
             );
         }
 
@@ -103,17 +263,15 @@ async function registerUser() {
             errorMessage,
             "error"
         );
-
     }
-    catch(error) {
 
-        console.log(
-            "REGISTER ERROR => ",
-            error
-        );
+    catch(error){
 
-        alert(
-            "Server Error"
+        console.error(error);
+
+        showToast(
+            "Server Error",
+            "error"
         );
     }
 }

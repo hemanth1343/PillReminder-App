@@ -379,7 +379,9 @@ async function deleteMedication(id){
     }
 }
 
-function editMedication(
+async function editMedication(
+	
+	
 
     id,
     name,
@@ -433,6 +435,7 @@ function editMedication(
 }
 
 async function handleEmergency(){
+	
 
     const token =
         localStorage.getItem(
@@ -509,7 +512,7 @@ async function handleEmergency(){
 
 // POPUP
 
-function showEmergencyPopup(){
+async function showEmergencyPopup(){
 
     const popup =
         document.createElement(
@@ -761,5 +764,7 @@ async function saveEmergencyContacts(){
         );
     }
 }
+
+
 
 

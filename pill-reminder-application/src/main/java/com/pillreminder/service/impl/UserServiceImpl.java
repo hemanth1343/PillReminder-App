@@ -73,4 +73,45 @@ public class UserServiceImpl implements UserService {
 				.pushNotifications(user.isPushNotifications()).timezone(user.getTimezone())
 				.createdAt(user.getCreatedAt()).build();
 	}
+
+	@Override
+	public void changePasswordAfterOtp(
+	        String email,
+	        String newPassword
+	) {
+
+	    User user =
+	            userRepository
+	            .findByEmail(email)
+	            .orElseThrow();
+
+	    user.setPassword(
+	            passwordEncoder.encode(
+	                    newPassword
+	            )
+	    );
+
+	    userRepository.save(user);
+	}
+	
+	@Override
+	public void resetPassword(
+	        String email,
+	        String newPassword
+	) {
+
+	    User user =
+	            userRepository
+	                    .findByEmail(email)
+	                    .orElseThrow();
+
+	    user.setPassword(
+	            passwordEncoder.encode(
+	                    newPassword
+	            )
+	    );
+
+	    userRepository.save(user);
+	}
+	
 }

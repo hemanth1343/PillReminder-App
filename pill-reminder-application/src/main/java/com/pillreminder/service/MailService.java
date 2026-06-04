@@ -16,4 +16,10 @@ public interface MailService {
             String subject,
             String body
     );
+    
+    // OTP Mail
+    void sendOtpMail(
+            String to,
+            String otp
+    );
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pillreminder.config.JwtService;
+import com.pillreminder.dto.ChangePasswordOtpRequest;
 import com.pillreminder.dto.Dtos.ChangePasswordRequest;
 import com.pillreminder.dto.Dtos.UpdateUserRequest;
 import com.pillreminder.dto.Dtos.UserResponse;
@@ -57,141 +59,171 @@ public class UserController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PostMapping("/me/change-password-otp")
+	public ResponseEntity<?> changePasswordOtp(
+
+			@AuthenticationPrincipal UserDetails userDetails,
+
+			@RequestBody ChangePasswordOtpRequest request) {
+
+		userService.changePasswordAfterOtp(
+
+				userDetails.getUsername(),
+
+				request.getNewPassword());
+
+		return ResponseEntity.ok("Password Changed");
+	}
+
 	@Operation(summary = "Soft-delete / deactivate account")
 	@DeleteMapping("/me")
 	public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal UserDetails userDetails) {
 		userService.deleteAccount(userDetails.getUsername());
 		return ResponseEntity.noContent().build();
 	}
-	
-	  private final UserRepository
-      userRepository;
 
-private final JwtService
-      jwtService;
+	private final UserRepository userRepository;
+
+	private final JwtService jwtService;
 
 // =========================
 // GET PROFILE
 // =========================
 
-@GetMapping("/profile")
+	@GetMapping("/profile")
 
-public ResponseEntity<?> getProfile(
+	public ResponseEntity<?> getProfile(
 
-        @RequestHeader("Authorization")
-        String authHeader
+			@RequestHeader("Authorization") String authHeader
 
-){
+	) {
 
-    try{
+		try {
 
-        String token =
-                authHeader.substring(7);
+			String token = authHeader.substring(7);
 
-        String email =
-                jwtService.extractUsername(
-                        token
-                );
+			String email = jwtService.extractUsername(token);
 
-        User user =
-                userRepository
-                .findByEmail(email)
-                .orElseThrow();
+			User user = userRepository.findByEmail(email).orElseThrow();
 
-        Map<String,Object> data =
-                new HashMap<>();
+			Map<String, Object> data = new HashMap<>();
 
-        data.put(
-                "fullName",
-                user.getFullName()
-        );
+			data.put("fullName", user.getFullName());
 
-        data.put(
-                "email",
-                user.getEmail()
-        );
+			data.put("email", user.getEmail());
 
-        data.put(
-                "phone",
-                user.getPhone()
-        );
+			data.put("phone", user.getPhone());
 
-        return ResponseEntity.ok(
-                data
-        );
-    }
+			data.put("profileImage", user.getProfileImage());
 
-    catch(Exception e){
+			data.put("emailNotifications", user.isEmailNotifications());
 
-        e.printStackTrace();
+			data.put("pushNotifications", user.isPushNotifications());
 
-        return ResponseEntity
-                .badRequest()
-                .body(
-                    "Failed To Load Profile"
-                );
-    }
-}
+			return ResponseEntity.ok(data);
+		}
+
+		catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.badRequest().body("Failed");
+		}
+	}
 
 // =========================
 // UPDATE PROFILE
 // =========================
 
-@PutMapping("/profile")
+	@PutMapping("/profile")
 
-public ResponseEntity<?> updateProfile(
+	public ResponseEntity<?> updateProfile(
 
-        @RequestHeader("Authorization")
-        String authHeader,
+			@RequestHeader("Authorization") String authHeader,
 
-        @RequestBody
-        Map<String,String> request
+			@RequestBody Map<String, Object> request
 
-){
+	) {
 
-    try{
+		try {
 
-        String token =
-                authHeader.substring(7);
+			String token = authHeader.substring(7);
 
-        String email =
-                jwtService.extractUsername(
-                        token
-                );
+			String email = jwtService.extractUsername(token);
 
-        User user =
-                userRepository
-                .findByEmail(email)
-                .orElseThrow();
+			User user = userRepository.findByEmail(email).orElseThrow();
 
-        user.setFullName(
-                request.get(
-                        "fullName"
-                )
-        );
+			// FULL NAME
 
-        user.setPhone(
-                request.get(
-                        "phone"
-                )
-        );
+			Object fullName = request.get("fullName");
 
-        userRepository.save(user);
+			if (fullName != null) {
 
-        return ResponseEntity.ok(
-                "Profile Updated"
-        );
-    }
+				user.setFullName(fullName.toString());
+			}
 
-    catch(Exception e){
+			// PHONE
 
-        e.printStackTrace();
+			Object phone = request.get("phone");
 
-        return ResponseEntity
-                .badRequest()
-                .body(
-                    "Failed To Update Profile"
-                );
-    }
-}
+			if (phone != null) {
+
+				user.setPhone(phone.toString());
+			}
+
+			// PROFILE IMAGE
+
+			Object profileImage = request.get("profileImage");
+
+			if (profileImage != null) {
+
+				String image = profileImage.toString();
+
+				System.out.println("IMAGE RECEIVED LENGTH: " + image.length());
+
+				user.setProfileImage(image);
+			}
+
+			userRepository.save(user);
+
+			return ResponseEntity.ok("Profile Updated");
+		}
+
+		catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.badRequest().body("Failed");
+		}
+	}
+
+	@PutMapping("/preferences")
+
+	public ResponseEntity<?> updatePreferences(
+
+			Authentication authentication,
+
+			@RequestBody Map<String, Object> request) {
+
+		String email = authentication.getName();
+
+		User user = userRepository.findByEmail(email).orElseThrow();
+
+		// EMAIL NOTIFICATIONS
+
+		Boolean emailNotifications = (Boolean) request.get("emailNotifications");
+
+		// PUSH NOTIFICATIONS
+
+		Boolean pushNotifications = (Boolean) request.get("pushNotifications");
+
+		user.setEmailNotifications(emailNotifications);
+
+		user.setPushNotifications(pushNotifications);
+
+		userRepository.save(user);
+
+		return ResponseEntity.ok("Preferences Updated");
+	}
+
 }

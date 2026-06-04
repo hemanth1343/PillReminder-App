@@ -3,6 +3,7 @@ package com.pillreminder.service.impl;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +25,11 @@ import com.pillreminder.entity.User;
 import com.pillreminder.enums.Role;
 import com.pillreminder.exception.EmailAlreadyExistsException;
 import com.pillreminder.exception.TokenRefreshException;
+import com.pillreminder.repository.EmailOtpRepository;
 import com.pillreminder.repository.RefreshTokenRepository;
 import com.pillreminder.repository.UserRepository;
 import com.pillreminder.service.AuthService;
+import com.pillreminder.service.MailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +46,10 @@ public class AuthServiceImpl implements AuthService {
 	private final JwtService jwtService;
 
 	private final AuthenticationManager authenticationManager;
+	
+	private final EmailOtpRepository otpRepository;
+
+	private final MailService mailService;
 
 	@Value("${app.jwt.refresh-expiration}")
 	private long refreshExpiration;
@@ -282,5 +289,13 @@ public class AuthServiceImpl implements AuthService {
 				.createdAt(user.getCreatedAt())
 
 				.build();
+	}
+	
+	private String generateOtp() {
+
+	    return String.valueOf(
+	            100000 +
+	            new Random().nextInt(900000)
+	    );
 	}
 }
