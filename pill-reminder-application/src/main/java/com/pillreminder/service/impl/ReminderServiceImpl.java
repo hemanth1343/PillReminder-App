@@ -25,6 +25,7 @@ public class ReminderServiceImpl implements ReminderService {
 	private final MedicationRepository medicationRepository;
 	private final UserRepository userRepository;
 	private final NotificationService notificationService;
+	private final MailService mailService;
 
 	@Override
 	public List<ReminderLogResponse> getTodayReminders(String email) {
@@ -163,7 +164,6 @@ public class ReminderServiceImpl implements ReminderService {
 					reminderLogRepository.save(rl);
 					created++;
 
-					notificationService.sendReminderNotification(med.getUser(), med, scheduled);
 				}
 			}
 		}
@@ -204,4 +204,39 @@ public class ReminderServiceImpl implements ReminderService {
 				.scheduledTime(r.getScheduledTime()).takenAt(r.getTakenAt()).status(r.getStatus()).notes(r.getNotes())
 				.snoozeCount(r.getSnoozeCount()).createdAt(r.getCreatedAt()).build();
 	}
+
+	@Transactional
+	public void sendMedicationReminders() {
+
+		LocalDateTime now = LocalDateTime.now();
+
+		LocalDateTime afterFiveMinutes = now.plusMinutes(5);
+
+		List<ReminderLog> reminders = reminderLogRepository.findRemindersForEmail(now, afterFiveMinutes);
+
+		for (ReminderLog reminder : reminders) {
+
+			try {
+
+				mailService.sendMail(
+
+						reminder.getUser().getEmail(),
+
+						reminder.getMedication().getName(),
+
+						reminder.getMedication().getDosage(),
+
+						reminder.getScheduledTime().toLocalTime().toString());
+
+				reminder.setEmailSent(true);
+
+				reminderLogRepository.save(reminder);
+
+			} catch (Exception e) {
+
+				log.error("Mail failed: {}", e.getMessage());
+			}
+		}
+	}
+
 }

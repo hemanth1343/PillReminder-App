@@ -166,7 +166,7 @@ public class ReminderScheduler {
 
                 log.info(
 
-                        "✅ Reminder Mail Sent To {}",
+                        " Reminder Mail Sent To {}",
 
                         reminder
                         .getUser()
@@ -180,7 +180,7 @@ public class ReminderScheduler {
 
             log.error(
 
-                    "❌ Reminder mail failed: {}",
+                    " Reminder mail failed: {}",
 
                     e.getMessage()
             );

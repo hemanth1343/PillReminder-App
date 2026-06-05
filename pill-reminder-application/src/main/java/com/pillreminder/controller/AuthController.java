@@ -366,7 +366,7 @@ public class AuthController {
 	    
 	    @PostMapping("/forgot-password/verify-otp")
 	    public ResponseEntity<?> verifyForgotOtp(
-
+  
 	            @RequestParam String email,
 
 	            @RequestParam String otp

@@ -1,24 +1,25 @@
 package com.pillreminder.service.impl;
 
-import com.pillreminder.dto.Dtos.*;
-import com.pillreminder.entity.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.pillreminder.dto.Dtos.CreateMedicationRequest;
+import com.pillreminder.dto.Dtos.MedicationResponse;
+import com.pillreminder.dto.Dtos.UpdateMedicationRequest;
+import com.pillreminder.entity.Medication;
+import com.pillreminder.entity.User;
 import com.pillreminder.exception.ResourceNotFoundException;
-
-import com.pillreminder.repository.*;
-
+import com.pillreminder.repository.MedicationRepository;
+import com.pillreminder.repository.UserRepository;
 import com.pillreminder.service.MedicationService;
+import com.pillreminder.service.NotificationService;
 import com.pillreminder.service.ReminderService;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,8 @@ public class MedicationServiceImpl implements MedicationService {
 	private final UserRepository userRepository;
 
 	private final ReminderService reminderService;
+	
+	private final NotificationService notificationService;
 
 	@Override
 	@Transactional
@@ -68,9 +71,22 @@ public class MedicationServiceImpl implements MedicationService {
 
 				.build();
 
-		Medication savedMedication = medicationRepository.save(med);
+		Medication savedMedication =
+		        medicationRepository.save(med);
 
-		reminderService.generateDailyReminders(LocalDate.now());
+		notificationService
+		        .sendReminderNotification(
+
+		                user,
+
+		                savedMedication,
+
+		                LocalDateTime.now()
+		        );
+
+		reminderService.generateDailyReminders(
+		        LocalDate.now()
+		);
 
 		return toResponse(savedMedication);
 	}

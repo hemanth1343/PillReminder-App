@@ -64,9 +64,9 @@ public class ReminderLog {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
-    
-    @Column(nullable = false)
 
+
+    @Column(name = "email_sent")
     private boolean emailSent = false;
 
 }
