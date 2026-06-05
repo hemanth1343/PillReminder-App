@@ -229,17 +229,32 @@ async function markTaken(id){
         if(response.ok){
 
             alert(
-                "Reminder Marked As Taken"
+                "✅ Reminder Marked As Taken"
             );
 
             loadReminders();
+
+            return;
         }
+
+        // GET BACKEND ERROR MESSAGE
+
+        const errorMessage =
+            await response.text();
+
+        alert(
+            errorMessage
+        );
 
     }
 
     catch(error){
 
         console.error(error);
+
+        alert(
+            "❌ Failed To Mark Reminder"
+        );
     }
 }
 
@@ -272,17 +287,31 @@ async function markMissed(id){
         if(response.ok){
 
             alert(
-                "Reminder Marked As Missed"
+                "❌ Reminder Marked As Missed"
             );
 
             loadReminders();
+
+            return;
         }
 
+        // GET BACKEND ERROR MESSAGE
+
+        const errorMessage =
+            await response.text();
+
+        alert(
+            errorMessage
+        );
     }
 
     catch(error){
 
         console.error(error);
+
+        alert(
+            "❌ Failed To Mark Reminder"
+        );
     }
 }
 

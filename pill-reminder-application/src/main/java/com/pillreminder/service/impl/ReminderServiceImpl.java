@@ -62,29 +62,122 @@ public class ReminderServiceImpl implements ReminderService {
 	@Override
 	@Transactional
 	public ReminderLogResponse markTaken(String email, Long logId) {
+
 		ReminderLog rl = findLog(email, logId);
+
+		LocalDateTime now = LocalDateTime.now();
+
+		LocalDateTime scheduledTime = rl.getScheduledTime();
+
+		// =====================================
+		// TOO EARLY
+		// =====================================
+
+		if (now.isBefore(scheduledTime)) {
+
+			throw new RuntimeException(
+
+					"Still time is there to take medication. Please take it at the scheduled time.");
+		}
+
+		// =====================================
+		// MISSED AFTER 20 MINUTES
+		// =====================================
+
+		if (now.isAfter(scheduledTime.plusMinutes(20))) {
+
+			rl.setStatus(ReminderStatus.MISSED);
+
+			reminderLogRepository.save(rl);
+
+			throw new RuntimeException(
+
+					"Medication time expired. This reminder has been marked as MISSED.");
+		}
+
+		// =====================================
+		// MARK AS TAKEN
+		// =====================================
+
 		rl.setStatus(ReminderStatus.TAKEN);
-		rl.setTakenAt(LocalDateTime.now());
+
+		rl.setTakenAt(now);
 
 		Medication med = rl.getMedication();
+
 		if (med.getRemainingPills() != null && med.getRemainingPills() > 0) {
-			med.setRemainingPills(med.getRemainingPills() - 1);
+
+			med.setRemainingPills(
+
+					med.getRemainingPills() - 1);
+
 			medicationRepository.save(med);
 
+			// ==========================
+			// LOW STOCK ALERT
+			// ==========================
+
 			if (med.getRefillReminderAt() != null && med.getRemainingPills() <= med.getRefillReminderAt()) {
-				notificationService.sendRefillReminder(rl.getUser(), med);
+
+				notificationService.sendRefillReminder(
+
+						rl.getUser(),
+
+						med);
 			}
 		}
 
-		return toResponse(reminderLogRepository.save(rl));
+		return toResponse(
+
+				reminderLogRepository.save(rl));
 	}
 
 	@Override
 	@Transactional
-	public ReminderLogResponse markMissed(String email, Long logId) {
-		ReminderLog rl = findLog(email, logId);
-		rl.setStatus(ReminderStatus.MISSED);
-		return toResponse(reminderLogRepository.save(rl));
+	public ReminderLogResponse markMissed(
+	        String email,
+	        Long logId
+	) {
+
+	    ReminderLog rl =
+	            findLog(email, logId);
+
+	    LocalDateTime now =
+	            LocalDateTime.now();
+
+	    LocalDateTime scheduledTime =
+	            rl.getScheduledTime();
+
+	    // =====================================
+	    // TOO EARLY TO MARK MISSED
+	    // =====================================
+
+	    if(
+	            now.isBefore(
+	                    scheduledTime
+	            )
+	    ){
+
+	        throw new RuntimeException(
+
+	                " Medication time has not arrived yet. You cannot mark it as missed before the scheduled time."
+	        );
+	    }
+
+	    // =====================================
+	    // MARK AS MISSED
+	    // =====================================
+
+	    rl.setStatus(
+	            ReminderStatus.MISSED
+	    );
+
+	    return toResponse(
+
+	            reminderLogRepository.save(
+	                    rl
+	            )
+	    );
 	}
 
 	@Override
@@ -173,7 +266,7 @@ public class ReminderServiceImpl implements ReminderService {
 	@Override
 	@Transactional
 	public void markOverdueAsMissed() {
-		LocalDateTime threshold = LocalDateTime.now().minusMinutes(30);
+		LocalDateTime threshold = LocalDateTime.now().minusMinutes(20);
 		List<ReminderLog> overdue = reminderLogRepository.findOverdueReminders(threshold);
 		for (ReminderLog rl : overdue) {
 			rl.setStatus(ReminderStatus.MISSED);
