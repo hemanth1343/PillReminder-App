@@ -475,7 +475,9 @@ async function handleEmergency(){
             const goAdd =
                 confirm(
 
-                    "Please Add Minimum 2 Emergency Contacts"
+					"Emergency Contacts Required\n\n" +
+
+					 "Please add at least 2 emergency contacts before using the Emergency Alert feature."
                 );
 
             if(goAdd){
@@ -709,7 +711,9 @@ async function saveEmergencyContacts(){
     ){
 
         alert(
-            "Please Add Minimum 2 Emergency Contacts"
+			"Emergency Contacts Required\n\n" +
+
+			"Please add at least 2 emergency contacts before using the Emergency Alert feature."
         );
 
         return;

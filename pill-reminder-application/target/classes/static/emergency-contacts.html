@@ -16,38 +16,100 @@
 
 <body>
 
-<div class="card"
-     style="max-width:700px;margin:40px auto;">
+	<div class="container">
+
+	    <div class="card">
 
     <h1 class="section-title">
 
         🚨 Emergency Contacts
 
     </h1>
+		   
+		   <div class="input-group">
+		              <label class="input-label">Parent / Guide Name</label>
+		              <input type="text" id="contactName1" placeholder="Parent / Guide Name">
+		          </div>
 
-    <input type="text"
-           id="contactName1"
-           placeholder="Parent / Guide Name">
+		   <div class="input-group">
+		   	              <label class="input-label">Email Address</label>
+		   	              <input type="email" id="contactEmail1" placeholder="Email Address">
+		   	          </div>
 
-    <input type="email"
-           id="contactEmail1"
-           placeholder="Email Address">
 
-    <input type="text"
-           id="contactName2"
-           placeholder="Second Contact Name">
+		   <div class="input-group">
+		   		              <label class="input-label">Second Contact Name</label>
+		   		              <input type="text" id="contactName2" placeholder="Second Contact Name">
+		   		          </div>
 
-    <input type="email"
-           id="contactEmail2"
-           placeholder="Email Address">
+		   <div class="input-group">
+		   	   	              <label class="input-label">Email Address</label>
+		   	   	              <input type="email" id="contactEmail2" placeholder="Email Address">
+		   	   	          </div>
 
-		   <button onclick="saveEmergencyContacts()">
+		   <button class="otp-btn" onclick="saveEmergencyContacts()">
 		       Save Contacts
 		   </button>
+		   
+		  
 
 </div>
-
+</div>
 <script>
+
+
+	window.onload = function(){
+
+	    const contacts =
+	        JSON.parse(
+	            localStorage.getItem(
+	                "emergencyContacts"
+	            )
+	        );
+
+	    if(
+	        contacts &&
+	        contacts.length >= 2
+	    ){
+
+	        window.location.href =
+	            "medications.html";
+	    }
+	};
+
+	// ====================================
+	// BLOCK BACK BUTTON UNTIL SAVED
+	// ====================================
+
+	if(
+	    localStorage.getItem(
+	        "emergencySaved"
+	    ) !== "true"
+	){
+
+	    window.history.pushState(
+	        null,
+	        null,
+	        window.location.href
+	    );
+
+	    window.onpopstate = function(){
+
+	        alert(
+
+	            "Emergency Contacts Required\n\n" +
+
+	            "Please add at least 2 emergency contacts before leaving this page."
+
+	        );
+
+	        window.history.pushState(
+	            null,
+	            null,
+	            window.location.href
+	        );
+	    };
+	}
 
 function saveEmergencyContacts(){
 
@@ -87,7 +149,9 @@ function saveEmergencyContacts(){
     ){
 
         alert(
-            "Please Add Minimum 2 Emergency Emails"
+			"Emergency Contacts Required\n\n" +
+
+			 "Please add at least 2 emergency contacts before using the Emergency Alert feature."
         );
 
         return;
