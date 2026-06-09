@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Medications | Prescription Connect
+    </title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+</head>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <h2 class="section-title">
+            💊 Medicine Search
+        </h2>
+		
+		
+		<div class="input-group">
+
+		                <label>
+		                    Medicine Name
+		                </label>
+
+						<input
+						           type="text"
+						           id="medicineName"
+						           placeholder="Enter Medicine Name">
+
+		            </div>
+		
+
+       
+
+        <button
+           class="otp-btn"
+            onclick="searchMedicine()">
+
+            Search
+        </button>
+
+        <div id="loader"
+             style="display:none">
+
+             Loading... 
+        </div>
+
+        <div id="medicineCard"></div>
+		<br>
+		<a href="medications.html"
+		style="
+		text-decoration:none;
+		      background:#7c4dff;
+		      color:white;
+		      padding:10px 20px;
+		      border-radius:8px;
+		      display:inline-block;
+		   ">
+		          Back
+		        </a>
+		
+
+    </div>
+
+</div>
+
+<script src="js/medicine.js"></script>
+
+</html>

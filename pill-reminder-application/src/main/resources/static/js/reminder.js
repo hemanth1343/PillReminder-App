@@ -154,7 +154,7 @@ async function loadReminders(){
             class="taken-btn"
             onclick="markTaken(${item.id})">
 
-            ✔ Taken
+             Taken
 
         </button>
 
@@ -162,7 +162,7 @@ async function loadReminders(){
             class="missed-btn"
             onclick="markMissed(${item.id})">
 
-            ✖ Missed
+            Missed
 
         </button>
 
@@ -229,7 +229,7 @@ async function markTaken(id){
         if(response.ok){
 
             alert(
-                "✅ Reminder Marked As Taken"
+                " Reminder Marked As Taken"
             );
 
             loadReminders();
@@ -253,7 +253,7 @@ async function markTaken(id){
         console.error(error);
 
         alert(
-            "❌ Failed To Mark Reminder"
+            " Failed To Mark Reminder"
         );
     }
 }
@@ -310,7 +310,7 @@ async function markMissed(id){
         console.error(error);
 
         alert(
-            "❌ Failed To Mark Reminder"
+            "Failed To Mark Reminder"
         );
     }
 }
