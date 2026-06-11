@@ -30,7 +30,7 @@ public class MedicationServiceImpl implements MedicationService {
 	private final UserRepository userRepository;
 
 	private final ReminderService reminderService;
-	
+
 	private final NotificationService notificationService;
 
 	@Override
@@ -71,22 +71,17 @@ public class MedicationServiceImpl implements MedicationService {
 
 				.build();
 
-		Medication savedMedication =
-		        medicationRepository.save(med);
+		Medication savedMedication = medicationRepository.save(med);
 
-		notificationService
-		        .sendReminderNotification(
+		notificationService.sendReminderNotification(
 
-		                user,
+				user,
 
-		                savedMedication,
+				savedMedication,
 
-		                LocalDateTime.now()
-		        );
+				LocalDateTime.now());
 
-		reminderService.generateDailyReminders(
-		        LocalDate.now()
-		);
+		reminderService.generateDailyReminders(LocalDate.now());
 
 		return toResponse(savedMedication);
 	}

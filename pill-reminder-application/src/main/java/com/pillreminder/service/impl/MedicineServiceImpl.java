@@ -16,255 +16,129 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class MedicineServiceImpl
-        implements MedicineService {
+public class MedicineServiceImpl implements MedicineService {
 
-    private final MedicineRepository medicineRepository;
+	private final MedicineRepository medicineRepository;
 
-    private final RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
-    private final ObjectMapper objectMapper =
-            new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Override
-    public MedicineResponse getMedicine(
-            String medicineName
-    ) {
+	@Override
+	public MedicineResponse getMedicine(String medicineName) {
 
-        Medicine cached =
-                medicineRepository
-                .findByMedicineNameIgnoreCase(
-                        medicineName
-                )
-                .orElse(null);
+		Medicine cached = medicineRepository.findByMedicineNameIgnoreCase(medicineName).orElse(null);
 
-        if(cached != null){
+		if (cached != null) {
 
-            return map(cached);
-        }
+			return map(cached);
+		}
 
-        try {
+		try {
 
-            String url =
+			String url =
 
-                    "https://api.fda.gov/drug/label.json"
-                    +
-                    "?search=openfda.brand_name:\""
-                    +
-                    medicineName
-                    +
-                    "\"&limit=1";
+					"https://api.fda.gov/drug/label.json" + "?search=openfda.brand_name:\"" + medicineName
+							+ "\"&limit=1";
 
-            String response =
+			String response =
 
-                    restTemplate.getForObject(
-                            url,
-                            String.class
-                    );
+					restTemplate.getForObject(url, String.class);
 
-            JsonNode root =
-                    objectMapper.readTree(
-                            response
-                    );
+			JsonNode root = objectMapper.readTree(response);
 
-            JsonNode result =
-                    root.path("results")
-                            .get(0);
+			JsonNode result = root.path("results").get(0);
 
-            Medicine medicine =
-                    Medicine.builder()
+			Medicine medicine = Medicine.builder()
 
-                    .medicineName(
-                            medicineName
-                    )
+					.medicineName(medicineName)
 
-                    .genericName(
-                            getNestedArrayValue(
-                                    result,
-                                    "openfda",
-                                    "generic_name"
-                            )
-                    )
+					.genericName(getNestedArrayValue(result, "openfda", "generic_name"))
 
-                    .manufacturer(
-                            getNestedArrayValue(
-                                    result,
-                                    "openfda",
-                                    "manufacturer_name"
-                            )
-                    )
+					.manufacturer(getNestedArrayValue(result, "openfda", "manufacturer_name"))
 
-                    .uses(
-                            getArrayValue(
-                                    result,
-                                    "indications_and_usage"
-                            )
-                    )
+					.uses(getArrayValue(result, "indications_and_usage"))
 
-                    .sideEffects(
-                            getArrayValue(
-                                    result,
-                                    "adverse_reactions"
-                            )
-                    )
+					.sideEffects(getArrayValue(result, "adverse_reactions"))
 
-                    .dosage(
-                            getArrayValue(
-                                    result,
-                                    "dosage_and_administration"
-                            )
-                    )
+					.dosage(getArrayValue(result, "dosage_and_administration"))
 
-                    .interactions(
-                            getArrayValue(
-                                    result,
-                                    "drug_interactions"
-                            )
-                    )
+					.interactions(getArrayValue(result, "drug_interactions"))
 
-                    .warnings(
-                            getArrayValue(
-                                    result,
-                                    "warnings"
-                            )
-                    )
+					.warnings(getArrayValue(result, "warnings"))
 
-                    .whoCanTake(
-                            "Consult Healthcare Professional"
-                    )
+					.whoCanTake("Consult Healthcare Professional")
 
-                    .whoShouldAvoid(
-                            getArrayValue(
-                                    result,
-                                    "contraindications"
-                            )
-                    )
+					.whoShouldAvoid(getArrayValue(result, "contraindications"))
 
-                    .storage(
-                            getArrayValue(
-                                    result,
-                                    "storage_and_handling"
-                            )
-                    )
+					.storage(getArrayValue(result, "storage_and_handling"))
 
-                    .lastUpdated(
-                            LocalDateTime.now()
-                    )
+					.lastUpdated(LocalDateTime.now())
 
-                    .build();
+					.build();
 
-            medicineRepository.save(
-                    medicine
-            );
+			medicineRepository.save(medicine);
 
-            return map(
-                    medicine
-            );
+			return map(medicine);
 
-        } catch (Exception e) {
+		} catch (Exception e) {
 
-            throw new RuntimeException(
-                    "Medicine not found"
-            );
-        }
-    }
+			throw new RuntimeException("Medicine not found");
+		}
+	}
 
-    private String getArrayValue(
-            JsonNode node,
-            String field
-    ) {
+	private String getArrayValue(JsonNode node, String field) {
 
-        JsonNode value =
-                node.path(field);
+		JsonNode value = node.path(field);
 
-        if(
-                value.isArray()
-                &&
-                value.size() > 0
-        ) {
+		if (value.isArray() && value.size() > 0) {
 
-            return value.get(0)
-                    .asText();
-        }
+			return value.get(0).asText();
+		}
 
-        return "Not Available";
-    }
+		return "Not Available";
+	}
 
-    private String getNestedArrayValue(
-            JsonNode node,
-            String parent,
-            String child
-    ) {
+	private String getNestedArrayValue(JsonNode node, String parent, String child) {
 
-        JsonNode value =
+		JsonNode value =
 
-                node.path(parent)
-                        .path(child);
+				node.path(parent).path(child);
 
-        if(
-                value.isArray()
-                &&
-                value.size() > 0
-        ) {
+		if (value.isArray() && value.size() > 0) {
 
-            return value.get(0)
-                    .asText();
-        }
+			return value.get(0).asText();
+		}
 
-        return "Not Available";
-    }
+		return "Not Available";
+	}
 
-    private MedicineResponse map(
-            Medicine m
-    ) {
+	private MedicineResponse map(Medicine m) {
 
-        return MedicineResponse
-                .builder()
+		return MedicineResponse.builder()
 
-                .medicineName(
-                        m.getMedicineName()
-                )
+				.medicineName(m.getMedicineName())
 
-                .genericName(
-                        m.getGenericName()
-                )
+				.genericName(m.getGenericName())
 
-                .uses(
-                        m.getUses()
-                )
+				.uses(m.getUses())
 
-                .sideEffects(
-                        m.getSideEffects()
-                )
+				.sideEffects(m.getSideEffects())
 
-                .dosage(
-                        m.getDosage()
-                )
+				.dosage(m.getDosage())
 
-                .whoCanTake(
-                        m.getWhoCanTake()
-                )
+				.whoCanTake(m.getWhoCanTake())
 
-                .whoShouldAvoid(
-                        m.getWhoShouldAvoid()
-                )
+				.whoShouldAvoid(m.getWhoShouldAvoid())
 
-                .interactions(
-                        m.getInteractions()
-                )
+				.interactions(m.getInteractions())
 
-                .warnings(
-                        m.getWarnings()
-                )
+				.warnings(m.getWarnings())
 
-                .manufacturer(
-                        m.getManufacturer()
-                )
+				.manufacturer(m.getManufacturer())
 
-                .storage(
-                        m.getStorage()
-                )
+				.storage(m.getStorage())
 
-                .build();
-    }
+				.build();
+	}
 }

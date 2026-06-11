@@ -558,15 +558,3 @@ function showAdminMenu(){
         console.error(e);
     }
 }
-
-// =========================
-// LOGOUT
-// =========================
-
-function logout(){
-
-    localStorage.clear();
-
-    window.location.href =
-        "index.html";
-}

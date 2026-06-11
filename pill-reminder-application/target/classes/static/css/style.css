@@ -97,7 +97,7 @@ body::after{
 }
 
 .logo img{
-    width:42px;
+    width:68px;
 }
 
 .brand-title{
@@ -1904,5 +1904,89 @@ input:checked + .slider:before{
     color:white;
 }
 
+.reminders-layout{
 
+    display:flex;
+
+    gap:25px;
+
+    align-items:flex-start;
+
+    margin-top:20px;
+}
+
+.water-card{
+
+    width:35%;
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    border:1px solid rgba(255,255,255,0.1);
+
+    box-shadow:0 8px 25px rgba(0,0,0,0.2);
+}
+
+.medication-card{
+
+    width:65%;
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    border:1px solid rgba(255,255,255,0.1);
+
+    box-shadow:0 8px 25px rgba(0,0,0,0.2);
+}
+
+.water-card h2{
+
+    color:#00c2ff;
+
+    margin-bottom:20px;
+}
+
+.medication-card h2{
+
+    color:#7c4dff;
+
+    margin-bottom:20px;
+}
+
+.water-reminder-item{
+
+    background:rgba(255,255,255,0.05);
+
+    padding:15px;
+
+    border-radius:15px;
+
+    margin-bottom:15px;
+
+    border-left:4px solid #00c2ff;
+}
+
+@media(max-width:900px){
+
+    .reminders-layout{
+
+        flex-direction:column;
+    }
+
+    .water-card,
+    .medication-card{
+
+        width:100%;
+    }
+}
 

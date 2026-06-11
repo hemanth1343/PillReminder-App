@@ -67,7 +67,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 							"<h1>💊 Prescription Connect</h1>" +
 
-"<p>Medication Added Successfully</p>"
+							"<p>Medication Added Successfully</p>"
 
 							+
 
@@ -100,11 +100,9 @@ public class NotificationServiceImpl implements NotificationService {
 
 							+
 
-							"<tr>" + "<td><b>Reminder Time</b></td>" + "<td>" + medication.getScheduledTimeList()
-					        .stream()
-					        .map(time -> time.toString())
-					        .reduce((a,b) -> a + ", " + b)
-					        .orElse("No Time")
+							"<tr>" + "<td><b>Reminder Time</b></td>" + "<td>"
+							+ medication.getScheduledTimeList().stream().map(time -> time.toString())
+									.reduce((a, b) -> a + ", " + b).orElse("No Time")
 							+ "</td>" + "</tr>"
 
 							+
@@ -259,6 +257,67 @@ public class NotificationServiceImpl implements NotificationService {
 
 			log.error("Failed to send welcome email: {}", e.getMessage());
 		}
+	}
+
+	@Override
+	@Async
+	public void sendWaterReminderNotification(
+
+	        User user,
+
+	        LocalDateTime scheduledTime
+	) {
+
+	    if (mailSender == null) {
+
+	        return;
+	    }
+
+	    try {
+
+	        SimpleMailMessage message =
+	                new SimpleMailMessage();
+
+	        message.setTo(
+	                user.getEmail()
+	        );
+
+	        message.setSubject(
+	                "💧 Water Reminder"
+	        );
+
+	        message.setText(
+
+	                "Hi "
+
+	                        + user.getFullName()
+
+	                        + ",\n\n"
+
+	                        + "It's time to drink water.\n\n"
+
+	                        + "Reminder Time : "
+
+	                        + scheduledTime
+
+	                        + "\n\n"
+
+	                        + "Stay Hydrated 💧"
+	        );
+
+	        mailSender.send(message);
+
+	        System.out.println(
+
+	                "Water Email Sent Successfully"
+	        );
+
+	    }
+
+	    catch (Exception e) {
+
+	        e.printStackTrace();
+	    }
 	}
 
 }

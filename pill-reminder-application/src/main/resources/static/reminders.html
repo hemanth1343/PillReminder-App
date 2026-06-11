@@ -74,13 +74,6 @@
 
 						</button>
 
-        <button class="logout-btn"
-                onclick="logout()">
-
-            Logout
-
-        </button>
-
     </div>
 
 </div>
@@ -107,22 +100,60 @@
 
 	    </div>
 
-	    <div id="reminderList"
-	         class="reminder-grid">
+		<div class="reminders-layout">
 
-	        <div class="loading-card">
+		    <!-- WATER TRACKER -->
 
-	            <h3>
-	                Loading reminders...
-	            </h3>
+		    <div class="water-card">
 
-	        </div>
+		        <h2>
+		            💧 Water Intake Tracker
+		        </h2>
 
-	    </div>
+		        <div id="waterReminderList">
+
+		            <div class="loading-card">
+
+		                <h3>
+		                    Loading water reminders...
+		                </h3>
+
+		            </div>
+
+		        </div>
+
+		    </div>
+
+		    <!-- MEDICATION REMINDERS -->
+
+		    <div class="medication-card">
+
+		        <h2>
+		            💊 Medication Reminders
+		        </h2>
+
+		        <div id="reminderList"
+		             class="reminder-grid">
+
+		            <div class="loading-card">
+
+		                <h3>
+		                    Loading reminders...
+		                </h3>
+
+		            </div>
+
+		        </div>
+
+		    </div>
+
+		</div>
 
 	</div>
 
 </div>
+
+
 <script src="js/toast.js"></script>
 <script src="js/medication.js"></script>
 <script src="js/reminder.js"></script>

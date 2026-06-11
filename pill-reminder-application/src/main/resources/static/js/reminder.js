@@ -1,11 +1,12 @@
-const API_BASE =
-    "http://localhost:8080/api";
+const API_BASE = "http://localhost:8080/api";
 
 // AUTO LOAD
 
 window.onload = function(){
 
     loadReminders();
+	
+	loadWaterReminders();
 };
 
 // LOAD REMINDERS
@@ -315,12 +316,270 @@ async function markMissed(id){
     }
 }
 
-// LOGOUT
+async function loadWaterReminders(){
 
-function logout(){
+    const token =
+        localStorage.getItem("token");
 
-    localStorage.clear();
+    const waterList =
+        document.getElementById(
+            "waterReminderList"
+        );
 
-    window.location.href =
-        "index.html";
+    try{
+
+        console.log(
+            "Loading Water Reminders..."
+        );
+
+        const response =
+            await fetch(
+
+                `${API_BASE}/water`,
+
+                {
+                    headers:{
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Failed to load water reminders"
+            );
+        }
+
+		const reminders =
+		    await response.json();
+
+        console.log(
+            "Water Reminders:",
+            reminders
+        );
+
+        waterList.innerHTML = "";
+
+        if(reminders.length === 0){
+
+            waterList.innerHTML = `
+
+                <div class="water-reminder-item">
+
+                    No Water Reminders Found
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+        reminders.forEach(reminder => {
+
+            const time =
+                new Date(
+                    reminder.scheduledTime
+                )
+                .toLocaleTimeString(
+                    [],
+                    {
+                        hour:"2-digit",
+                        minute:"2-digit"
+                    }
+                );
+
+            let statusColor =
+                "#fbbf24";
+
+            if(
+                reminder.status ===
+                "TAKEN"
+            ){
+                statusColor =
+                    "#22c55e";
+            }
+
+            if(
+                reminder.status ===
+                "MISSED"
+            ){
+                statusColor =
+                    "#ef4444";
+            }
+
+            waterList.innerHTML += `
+
+                <div class="water-reminder-item">
+
+                    <h3>
+                        💧 Drink Water
+                    </h3>
+
+                    <p>
+                        ⏰ ${time}
+                    </p>
+
+                    <p
+                        style="
+                        color:${statusColor};
+                        font-weight:bold;
+                        "
+                    >
+                        ${reminder.status}
+                    </p>
+
+                    ${
+                        reminder.status ===
+                        "PENDING"
+
+                        ?
+
+                        `
+                        <button
+                            onclick="
+                            markWaterTaken(
+                                ${reminder.id}
+                            )
+                            "
+                            class="otp-btn">
+
+                             Taken
+
+                        </button>
+
+                        <button
+                            onclick="
+                            markWaterMissed(
+                                ${reminder.id}
+                            )
+                            "
+                            class="otp-btn">
+
+                             Missed
+
+                        </button>
+                        `
+
+                        :
+
+                        ""
+                    }
+
+                </div>
+
+            `;
+        });
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        waterList.innerHTML = `
+
+            <div
+                class="
+                water-reminder-item
+                "
+            >
+
+                Failed To Load
+                Water Reminders
+
+            </div>
+
+        `;
+    }
 }
+
+async function markWaterTaken(id){
+
+    const token =
+        localStorage.getItem(
+            "token"
+        );
+
+    try{
+
+        const response =
+            await fetch(
+
+                `${API_BASE}/water/${id}/take`,
+
+                {
+                    method:"POST",
+
+                    headers:{
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        const message =
+            await response.text();
+
+        alert(message);
+
+        loadWaterReminders();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+    }
+}
+
+async function markWaterMissed(id){
+
+    const token =
+        localStorage.getItem(
+            "token"
+        );
+
+    try{
+
+        const response =
+            await fetch(
+
+                `${API_BASE}/water/${id}/miss`,
+
+                {
+                    method:"POST",
+
+                    headers:{
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        const message =
+            await response.text();
+
+        alert(message);
+
+        loadWaterReminders();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+    }
+}
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    function(){
+
+        loadWaterReminders();
+    }
+);

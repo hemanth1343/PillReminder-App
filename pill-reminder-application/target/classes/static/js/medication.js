@@ -81,7 +81,11 @@ async function loadMedications() {
         ${medication.scheduledTimes}<br>
 
         📅 Start:
-        ${medication.startDate || "-"}
+        ${medication.startDate || "-"}<br>
+		
+		🏁 End:
+		${medication.endDate || "Ongoing"}
+		
 
     </p>
 

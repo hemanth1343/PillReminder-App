@@ -73,7 +73,7 @@ public class ReminderServiceImpl implements ReminderService {
 		// TOO EARLY
 		// =====================================
 
-		if (now.isBefore(scheduledTime)) {
+		if (now.isBefore(scheduledTime.minusMinutes(10))) {
 
 			throw new RuntimeException(
 
@@ -134,50 +134,34 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Override
 	@Transactional
-	public ReminderLogResponse markMissed(
-	        String email,
-	        Long logId
-	) {
+	public ReminderLogResponse markMissed(String email, Long logId) {
 
-	    ReminderLog rl =
-	            findLog(email, logId);
+		ReminderLog rl = findLog(email, logId);
 
-	    LocalDateTime now =
-	            LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now();
 
-	    LocalDateTime scheduledTime =
-	            rl.getScheduledTime();
+		LocalDateTime scheduledTime = rl.getScheduledTime();
 
-	    // =====================================
-	    // TOO EARLY TO MARK MISSED
-	    // =====================================
+		// =====================================
+		// TOO EARLY TO MARK MISSED
+		// =====================================
 
-	    if(
-	            now.isBefore(
-	                    scheduledTime
-	            )
-	    ){
+		if (now.isBefore(scheduledTime)) {
 
-	        throw new RuntimeException(
+			throw new RuntimeException(
 
-	                " Medication time has not arrived yet. You cannot mark it as missed before the scheduled time."
-	        );
-	    }
+					" Medication time has not arrived yet. You cannot mark it as missed before the scheduled time.");
+		}
 
-	    // =====================================
-	    // MARK AS MISSED
-	    // =====================================
+		// =====================================
+		// MARK AS MISSED
+		// =====================================
 
-	    rl.setStatus(
-	            ReminderStatus.MISSED
-	    );
+		rl.setStatus(ReminderStatus.MISSED);
 
-	    return toResponse(
+		return toResponse(
 
-	            reminderLogRepository.save(
-	                    rl
-	            )
-	    );
+				reminderLogRepository.save(rl));
 	}
 
 	@Override
