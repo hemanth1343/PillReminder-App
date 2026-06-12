@@ -161,5 +161,52 @@ public class WaterServiceImpl implements WaterService {
 			}
 		}
 	}
+	
+	@Override
+	public void generateWaterRemindersForNewUser(
+	        User user
+	){
+
+	    LocalDate today =
+	            LocalDate.now();
+
+	    LocalTime[] times = {
+
+	            LocalTime.of(8,0),
+	            LocalTime.of(10,0),
+	            LocalTime.of(12,0),
+	            LocalTime.of(14,0),
+	            LocalTime.of(16,0),
+	            LocalTime.of(18,0),
+	            LocalTime.of(20,0)
+	    };
+
+	    for(LocalTime time : times){
+
+	        LocalDateTime scheduledTime =
+	                today.atTime(time);
+
+	        WaterLog log =
+	                WaterLog.builder()
+
+	                .user(user)
+
+	                .scheduledTime(
+	                        scheduledTime
+	                )
+
+	                .quantityMl(250)
+
+	                .status(
+	                        ReminderStatus.PENDING
+	                )
+
+	                .emailSent(false)
+
+	                .build();
+
+	        waterLogRepository.save(log);
+	    }
+	}
 
 }

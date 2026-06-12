@@ -68,6 +68,11 @@ async function loadProfile(){
             "emailNotifications"
         ).checked =
             user.emailNotifications || false;
+			
+		document.getElementById(
+            "waterEmailNotifications"
+        ).checked =
+            user.waterEmailNotifications || false;
 
         document.getElementById(
             "pushNotifications"
@@ -203,7 +208,7 @@ async function updateProfile(){
             );
 
             showToast(
-                "✓ Profile Updated",
+                " Profile Updated",
                 "success"
             );
         }
@@ -241,6 +246,11 @@ async function savePreferences(){
         document.getElementById(
             "emailNotifications"
         ).checked;
+		
+	const waterEmailNotifications =
+		document.getElementById(
+		            "waterEmailNotifications"
+		        ).checked;
 
     const pushNotifications =
         document.getElementById(
@@ -276,6 +286,8 @@ async function savePreferences(){
                         emailNotifications,
 
                         pushNotifications,
+						
+						waterEmailNotifications,
 
                         theme
                     })

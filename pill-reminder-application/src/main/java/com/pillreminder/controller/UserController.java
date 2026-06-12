@@ -119,6 +119,8 @@ public class UserController {
 			data.put("emailNotifications", user.isEmailNotifications());
 
 			data.put("pushNotifications", user.isPushNotifications());
+			
+			data.put("waterEmailNotifications", user.isWaterEmailNotifications());
 
 			return ResponseEntity.ok(data);
 		}
@@ -213,6 +215,8 @@ public class UserController {
 
 		Boolean emailNotifications = (Boolean) request.get("emailNotifications");
 
+		Boolean waterEmailNotifications = (Boolean) request.get("waterEmailNotifications");
+		
 		// PUSH NOTIFICATIONS
 
 		Boolean pushNotifications = (Boolean) request.get("pushNotifications");
@@ -220,6 +224,8 @@ public class UserController {
 		user.setEmailNotifications(emailNotifications);
 
 		user.setPushNotifications(pushNotifications);
+		
+		user.setWaterEmailNotifications(waterEmailNotifications);
 
 		userRepository.save(user);
 

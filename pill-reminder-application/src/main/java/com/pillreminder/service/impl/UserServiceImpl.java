@@ -75,43 +75,23 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void changePasswordAfterOtp(
-	        String email,
-	        String newPassword
-	) {
+	public void changePasswordAfterOtp(String email, String newPassword) {
 
-	    User user =
-	            userRepository
-	            .findByEmail(email)
-	            .orElseThrow();
+		User user = userRepository.findByEmail(email).orElseThrow();
 
-	    user.setPassword(
-	            passwordEncoder.encode(
-	                    newPassword
-	            )
-	    );
+		user.setPassword(passwordEncoder.encode(newPassword));
 
-	    userRepository.save(user);
+		userRepository.save(user);
 	}
-	
+
 	@Override
-	public void resetPassword(
-	        String email,
-	        String newPassword
-	) {
+	public void resetPassword(String email, String newPassword) {
 
-	    User user =
-	            userRepository
-	                    .findByEmail(email)
-	                    .orElseThrow();
+		User user = userRepository.findByEmail(email).orElseThrow();
 
-	    user.setPassword(
-	            passwordEncoder.encode(
-	                    newPassword
-	            )
-	    );
+		user.setPassword(passwordEncoder.encode(newPassword));
 
-	    userRepository.save(user);
+		userRepository.save(user);
 	}
-	
+
 }

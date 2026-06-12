@@ -3,6 +3,7 @@ package com.pillreminder.service;
 
 import java.util.List;
 
+import com.pillreminder.entity.User;
 import com.pillreminder.entity.WaterLog;
 
 public interface WaterService {
@@ -22,4 +23,9 @@ public interface WaterService {
     );
 
     void generateDailyWaterReminders();
+    
+    void generateWaterRemindersForNewUser(
+            User user
+    );
+    
 }

@@ -64,6 +64,10 @@ public class User {
     @Column(nullable = false)
     @Builder.Default
     private boolean emailNotifications = true;
+    
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean waterEmailNotifications = true;
 
     @Column(nullable = false)
     @Builder.Default
@@ -123,4 +127,7 @@ public class User {
     )
 
     private String profileImage;
+    
+    
+    
 }

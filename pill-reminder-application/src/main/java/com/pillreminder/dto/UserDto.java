@@ -1,102 +1,67 @@
 package com.pillreminder.dto;
 
-
 public class UserDto {
 
-    private Long id;
+	private Long id;
 
-    private String fullName;
+	private String fullName;
 
-    private String email;
+	private String email;
 
-    private String role;
+	private String role;
 
-    private int totalMedications;
+	private int totalMedications;
 
-    private int totalReminders;
+	private int totalReminders;
 
-    /*
-        DEFAULT CONSTRUCTOR
-    */
+	public UserDto() {
+	}
 
-    public UserDto() {
-    }
+	public Long getId() {
+		return id;
+	}
 
-    /*
-        ID
-    */
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public String getFullName() {
+		return fullName;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 
-    /*
-        FULL NAME
-    */
+	public String getEmail() {
+		return email;
+	}
 
-    public String getFullName() {
-        return fullName;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+	public String getRole() {
+		return role;
+	}
 
-    /*
-        EMAIL
-    */
+	public void setRole(String role) {
+		this.role = role;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public int getTotalMedications() {
+		return totalMedications;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setTotalMedications(int totalMedications) {
+		this.totalMedications = totalMedications;
+	}
 
-    /*
-        ROLE
-    */
+	public int getTotalReminders() {
+		return totalReminders;
+	}
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    /*
-        TOTAL MEDICATIONS
-    */
-
-    public int getTotalMedications() {
-        return totalMedications;
-    }
-
-    public void setTotalMedications(
-            int totalMedications
-    ) {
-        this.totalMedications =
-                totalMedications;
-    }
-
-    /*
-        TOTAL REMINDERS
-    */
-
-    public int getTotalReminders() {
-        return totalReminders;
-    }
-
-    public void setTotalReminders(
-            int totalReminders
-    ) {
-        this.totalReminders =
-                totalReminders;
-    }
+	public void setTotalReminders(int totalReminders) {
+		this.totalReminders = totalReminders;
+	}
 }

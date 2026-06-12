@@ -25,11 +25,10 @@ import com.pillreminder.entity.User;
 import com.pillreminder.enums.Role;
 import com.pillreminder.exception.EmailAlreadyExistsException;
 import com.pillreminder.exception.TokenRefreshException;
-import com.pillreminder.repository.EmailOtpRepository;
 import com.pillreminder.repository.RefreshTokenRepository;
 import com.pillreminder.repository.UserRepository;
 import com.pillreminder.service.AuthService;
-import com.pillreminder.service.MailService;
+import com.pillreminder.service.WaterService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,10 +45,8 @@ public class AuthServiceImpl implements AuthService {
 	private final JwtService jwtService;
 
 	private final AuthenticationManager authenticationManager;
-	
-	private final EmailOtpRepository otpRepository;
 
-	private final MailService mailService;
+	private final WaterService waterService;
 
 	@Value("${app.jwt.refresh-expiration}")
 	private long refreshExpiration;
@@ -79,8 +76,10 @@ public class AuthServiceImpl implements AuthService {
 
 				.build();
 
-		userRepository.save(user);
-
+		User savedUser = userRepository.save(user); 
+		
+		waterService .generateWaterRemindersForNewUser( savedUser );
+		
 		Map<String, Object> claims = new HashMap<>();
 
 		claims.put("role", user.getRole().name());
@@ -97,96 +96,72 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public AuthResponse login(LoginRequest request) {
 
-	    // FIND USER
+		// FIND USER
 
-	    User user = userRepository
+		User user = userRepository
 
-	            .findByEmail(
-	                    request.getEmail()
-	            )
+				.findByEmail(request.getEmail())
 
-	            .orElseThrow(() ->
+				.orElseThrow(() ->
 
-	                    new BadCredentialsException(
-	                            "Invalid email or password"
-	                    )
-	            );
+				new BadCredentialsException("Invalid email or password"));
 
-	    // BLOCKED USER CHECK
+		// BLOCKED USER CHECK
 
-	    if(Boolean.TRUE.equals(
-	            user.getBlocked()
-	    )){
+		if (Boolean.TRUE.equals(user.getBlocked())) {
 
-	        throw new RuntimeException(
+			throw new RuntimeException(
 
-	                "You have been blocked, please contact to : "
+					"You have been blocked, please contact to : "
 
-	                +
+							+
 
-	                user.getBlockedBy()
-	        );
-	    }
+							user.getBlockedBy());
+		}
 
-	    // PASSWORD AUTHENTICATION
+		// PASSWORD AUTHENTICATION
 
-	    authenticationManager.authenticate(
+		authenticationManager.authenticate(
 
-	            new UsernamePasswordAuthenticationToken(
+				new UsernamePasswordAuthenticationToken(
 
-	                    request.getEmail(),
+						request.getEmail(),
 
-	                    request.getPassword()
-	            )
-	    );
+						request.getPassword()));
 
-	    // JWT CLAIMS
+		// JWT CLAIMS
 
-	    Map<String, Object> claims =
-	            new HashMap<>();
+		Map<String, Object> claims = new HashMap<>();
 
-	    claims.put(
-	            "role",
-	            user.getRole().name()
-	    );
+		claims.put("role", user.getRole().name());
 
-	    // ACCESS TOKEN
+		// ACCESS TOKEN
 
-	    String accessToken =
-	            jwtService.generateToken(
+		String accessToken = jwtService.generateToken(
 
-	                    claims,
+				claims,
 
-	                    org.springframework.security.core.userdetails.User
+				org.springframework.security.core.userdetails.User
 
-	                            .withUsername(
-	                                    user.getEmail()
-	                            )
+						.withUsername(user.getEmail())
 
-	                            .password(
-	                                    user.getPassword()
-	                            )
+						.password(user.getPassword())
 
-	                            .authorities(
-	                                    user.getRole().name()
-	                            )
+						.authorities(user.getRole().name())
 
-	                            .build()
-	            );
+						.build());
 
-	    // REFRESH TOKEN
+		// REFRESH TOKEN
 
-	    String refreshToken =
-	            createRefreshToken(user);
+		String refreshToken = createRefreshToken(user);
 
-	    return buildAuthResponse(
+		return buildAuthResponse(
 
-	            accessToken,
+				accessToken,
 
-	            refreshToken,
+				refreshToken,
 
-	            user
-	    );
+				user);
 	}
 
 	@Override
@@ -290,12 +265,5 @@ public class AuthServiceImpl implements AuthService {
 
 				.build();
 	}
-	
-	private String generateOtp() {
 
-	    return String.valueOf(
-	            100000 +
-	            new Random().nextInt(900000)
-	    );
-	}
 }

@@ -22,127 +22,114 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class WaterScheduler {
 
-    private final WaterLogRepository waterLogRepository;
+	private final WaterLogRepository waterLogRepository;
 
-    private final NotificationService notificationService;
-    
-    private final WaterService waterService;
-    
-    @Scheduled(fixedRate = 60000)
-    public void sendWaterReminderEmails() {
+	private final NotificationService notificationService;
 
-        try {
+	private final WaterService waterService;
 
-            LocalDateTime now =
-                    LocalDateTime.now();
+	@Scheduled(fixedRate = 60000)
+	public void sendWaterReminderEmails() {
 
-            LocalDateTime afterThreeMinutes =
-                    now.plusMinutes(3);
+		try {
 
-            List<WaterLog> reminders =
-                    waterLogRepository
-                    .findUpcomingWaterReminders(
-                            now,
-                            afterThreeMinutes
-                    );
+			LocalDateTime now = LocalDateTime.now();
 
-            System.out.println(
-                    "Found Water Reminders: "
-                    + reminders.size()
-            );
+			LocalDateTime afterThreeMinutes = now.plusMinutes(3);
 
-            for (WaterLog reminder : reminders) {
+			List<WaterLog> reminders = waterLogRepository.findUpcomingWaterReminders(now, afterThreeMinutes);
 
-                notificationService
-                        .sendWaterReminderNotification(
+			System.out.println("Found Water Reminders: " + reminders.size());
 
-                                reminder.getUser(),
+			for (WaterLog reminder : reminders) {
 
-                                reminder.getScheduledTime()
-                        );
+				if (
 
-                reminder.setEmailSent(true);
+				!reminder.getUser().isWaterEmailNotifications()
 
-                waterLogRepository.save(reminder);
+				) {
 
-                System.out.println(
+					System.out.println(
 
-                        "Water Mail Sent To: "
+							"Water Email Disabled For: "
 
-                                + reminder
-                                .getUser()
-                                .getEmail()
-                );
-            }
+									+ reminder.getUser().getEmail());
 
-        } catch (Exception e) {
+					continue;
+				}
 
-            e.printStackTrace();
-        }
-    }
+				// SEND EMAIL
+				notificationService.sendWaterReminderNotification(
 
-    @Scheduled(fixedRate = 60000)
-    public void markExpiredWaterReminders(){
+						reminder.getUser(),
 
-        LocalDateTime now =
-                LocalDateTime.now();
+						reminder.getScheduledTime());
 
-        List<WaterLog> pending =
+				// MARK EMAIL AS SENT
+				reminder.setEmailSent(true);
 
-                waterLogRepository
-                .findByStatus(
-                        ReminderStatus.PENDING
-                );
+				waterLogRepository.save(reminder);
 
-        for(WaterLog log : pending){
+				System.out.println(
 
-            if(
-                now.isAfter(
+						"Water Mail Sent To: "
 
-                    log.getScheduledTime()
-                       .plusMinutes(3)
-                )
-            ){
+								+ reminder.getUser().getEmail());
+			}
 
-                log.setStatus(
-                        ReminderStatus.MISSED
-                );
+		}
 
-                waterLogRepository.save(log);
-            }
-        }
-    }
-    
-    @PostConstruct
-    public void init() {
+		catch (Exception e) {
 
-        System.out.println(
-            "WATER SCHEDULER STARTED"
-        );
+			e.printStackTrace();
+		}
+
+	}
+
+	@Scheduled(fixedRate = 60000)
+	public void markExpiredWaterReminders() {
+
+		LocalDateTime now = LocalDateTime.now();
+
+		List<WaterLog> pending =
+
+				waterLogRepository.findByStatus(ReminderStatus.PENDING);
+
+		for (WaterLog log : pending) {
+
+			if (now.isAfter(
+
+					log.getScheduledTime().plusMinutes(3))) {
+
+				log.setStatus(ReminderStatus.MISSED);
+
+				waterLogRepository.save(log);
+			}
+		}
+	}
+
+	@PostConstruct
+	public void init() {
+
+		System.out.println("WATER SCHEDULER STARTED");
 
 		waterService.generateDailyWaterReminders();
-    }
-    
-    @Scheduled(cron = "0 0 0 * * *")
-    public void deleteOldWaterLogs(){
+	}
 
-        List<WaterLog> logs =
-                waterLogRepository.findAll();
+	@Scheduled(cron = "0 0 0 * * *")
+	public void deleteOldWaterLogs() {
 
-        LocalDate today =
-                LocalDate.now();
+		List<WaterLog> logs = waterLogRepository.findAll();
 
-        for(WaterLog log : logs){
+		LocalDate today = LocalDate.now();
 
-            if(
-                !log.getScheduledTime()
-                    .toLocalDate()
-                    .equals(today)
-            ){
+		for (WaterLog log : logs) {
 
-                waterLogRepository.delete(log);
-            }
-        }
-    }
-    
+			if (!log.getScheduledTime().toLocalDate().equals(today)) {
+
+				waterLogRepository.delete(log);
+			}
+		}
+	}
+
 }
