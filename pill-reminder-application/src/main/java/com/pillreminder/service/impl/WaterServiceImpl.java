@@ -19,206 +19,147 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class WaterServiceImpl
-        implements WaterService {
+public class WaterServiceImpl implements WaterService {
 
-    private final WaterLogRepository waterLogRepository;
+	private final WaterLogRepository waterLogRepository;
 
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    @Override
-    public List<WaterLog> getTodayWaterLogs(
-            String email
-    ){
+	@Override
+	public List<WaterLog> getTodayWaterLogs(String email) {
 
-        User user =
-                userRepository
-                .findByEmail(email)
-                .orElseThrow(() ->
+		User user = userRepository.findByEmail(email).orElseThrow(() ->
 
-                        new RuntimeException(
-                                "User not found"
-                        )
-                );
+		new RuntimeException("User not found"));
 
-        return waterLogRepository
-                .findByUser(user);
-    }
-    @Override
-    @Transactional
-    public WaterLog markTaken(
-            String email,
-            Long id
-    ){
+		LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
 
-        WaterLog log =
-                waterLogRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Water reminder not found"
-                        )
-                );
+		LocalDateTime endOfDay = LocalDate.now().atTime(23, 59, 59);
 
-        LocalDateTime now =
-                LocalDateTime.now();
+		return waterLogRepository.findByUserAndScheduledTimeBetween(
 
-        LocalDateTime scheduled =
-                log.getScheduledTime();
+				user,
 
-        if(
-            now.isBefore(
-                    scheduled.minusMinutes(3)
-            )
-        ){
+				startOfDay,
 
-            throw new RuntimeException(
+				endOfDay);
+	}
 
-                    "⏰ You can drink water only within 3 minutes before reminder time."
-            );
-        }
+	@Override
+	@Transactional
+	public WaterLog markTaken(String email, Long id) {
 
-        if(
-            now.isAfter(
-                    scheduled.plusMinutes(3)
-            )
-        ){
+		WaterLog log = waterLogRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Water reminder not found"));
 
-            log.setStatus(
-                    ReminderStatus.MISSED
-            );
+		LocalDateTime now = LocalDateTime.now();
 
-            waterLogRepository.save(log);
+		LocalDateTime scheduled = log.getScheduledTime();
 
-            throw new RuntimeException(
+		if (now.isBefore(scheduled.minusMinutes(3))) {
 
-                    "❌ Water reminder expired and marked as MISSED."
-            );
-        }
+			throw new RuntimeException(
 
-        log.setStatus(
-                ReminderStatus.TAKEN
-        );
+					"⏰ You can drink water only within 3 minutes before reminder time.");
+		}
 
-        log.setTakenAt(now);
+		if (now.isAfter(scheduled.plusMinutes(3))) {
 
-        return waterLogRepository.save(log);
-    }
+			log.setStatus(ReminderStatus.MISSED);
 
-    @Override
-    @Transactional
-    public WaterLog markMissed(
-            String email,
-            Long id
-    ){
+			waterLogRepository.save(log);
 
-        WaterLog log =
-                waterLogRepository
-                .findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Water reminder not found"
-                        )
-                );
+			throw new RuntimeException(
 
-        LocalDateTime now =
-                LocalDateTime.now();
+					"❌ Water reminder expired and marked as MISSED.");
+		}
 
-        if(
-            now.isBefore(
-                    log.getScheduledTime()
-            )
-        ){
+		log.setStatus(ReminderStatus.TAKEN);
 
-            throw new RuntimeException(
+		log.setTakenAt(now);
 
-                    "⏰ Still time is there to drink water."
-            );
-        }
+		return waterLogRepository.save(log);
+	}
 
-        log.setStatus(
-                ReminderStatus.MISSED
-        );
+	@Override
+	@Transactional
+	public WaterLog markMissed(String email, Long id) {
 
-        return waterLogRepository.save(log);
-    }
+		WaterLog log = waterLogRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Water reminder not found"));
 
-    @Override
-    public void generateDailyWaterReminders() {
+		LocalDateTime now = LocalDateTime.now();
 
-        List<User> users =
-                userRepository.findAll();
+		if (now.isBefore(log.getScheduledTime())) {
 
-        LocalDate today =
-                LocalDate.now();
+			throw new RuntimeException(
 
-        LocalTime[] times = {
+					"⏰ Still time is there to drink water.");
+		}
 
-                LocalTime.of(8, 0),
-                LocalTime.of(10, 0),
-                LocalTime.of(12, 0),
-                LocalTime.of(14, 0),
-                LocalTime.of(16, 0),
-                LocalTime.of(18, 0),
-                LocalTime.of(20, 0)
-        };
+		log.setStatus(ReminderStatus.MISSED);
 
-        for(User user : users){
+		return waterLogRepository.save(log);
+	}
 
-            for(LocalTime time : times){
+	@Override
+	public void generateDailyWaterReminders() {
 
-                LocalDateTime scheduledTime =
-                        today.atTime(time);
+		List<User> users = userRepository.findAll();
 
-                boolean exists =
+		LocalDate today = LocalDate.now();
 
-                        waterLogRepository
-                        .existsByUserAndScheduledTime(
+		LocalTime[] times = {
 
-                                user,
+				LocalTime.of(8, 0), LocalTime.of(10, 0), LocalTime.of(12, 0), LocalTime.of(14, 0), LocalTime.of(16, 0),
+				LocalTime.of(18, 0), LocalTime.of(20, 0) };
 
-                                scheduledTime
-                        );
+		for (User user : users) {
 
-                if(!exists){
+			for (LocalTime time : times) {
 
-                    WaterLog log =
+				LocalDateTime scheduledTime = today.atTime(time);
 
-                            WaterLog.builder()
+				boolean exists =
 
-                            .user(user)
+						waterLogRepository.existsByUserAndScheduledTime(
 
-                            .scheduledTime(
-                                    scheduledTime
-                            )
+								user,
 
-                            .quantityMl(250)
+								scheduledTime);
 
-                            .status(
-                                    ReminderStatus.PENDING
-                            )
+				if (!exists) {
 
-                            .emailSent(false)
+					WaterLog log =
 
-                            .build();
+							WaterLog.builder()
 
-                    waterLogRepository.save(log);
+									.user(user)
 
-                    System.out.println(
+									.scheduledTime(scheduledTime)
 
-                            "Water Reminder Created : "
+									.quantityMl(250)
 
-                            + user.getEmail()
+									.status(ReminderStatus.PENDING)
 
-                            + " -> "
+									.emailSent(false)
 
-                            + scheduledTime
-                    );
-                }
-            }
-        }
-    }
-    
-   
-    
+									.build();
+
+					waterLogRepository.save(log);
+
+					System.out.println(
+
+							"Water Reminder Created : "
+
+									+ user.getEmail()
+
+									+ " -> "
+
+									+ scheduledTime);
+				}
+			}
+		}
+	}
+
 }

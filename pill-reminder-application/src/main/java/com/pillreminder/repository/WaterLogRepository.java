@@ -22,10 +22,16 @@ public interface WaterLogRepository
             ReminderStatus status
     );
 
-    // ADD THIS METHOD
     boolean existsByUserAndScheduledTime(
             User user,
             LocalDateTime scheduledTime
+    );
+    
+
+    List<WaterLog> findByUserAndScheduledTimeBetween(
+            User user,
+            LocalDateTime start,
+            LocalDateTime end
     );
 
     @Query("""

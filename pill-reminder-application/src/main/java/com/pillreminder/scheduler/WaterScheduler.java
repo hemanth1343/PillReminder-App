@@ -1,5 +1,6 @@
 package com.pillreminder.scheduler;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -120,6 +121,28 @@ public class WaterScheduler {
         );
 
 		waterService.generateDailyWaterReminders();
+    }
+    
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteOldWaterLogs(){
+
+        List<WaterLog> logs =
+                waterLogRepository.findAll();
+
+        LocalDate today =
+                LocalDate.now();
+
+        for(WaterLog log : logs){
+
+            if(
+                !log.getScheduledTime()
+                    .toLocalDate()
+                    .equals(today)
+            ){
+
+                waterLogRepository.delete(log);
+            }
+        }
     }
     
 }
